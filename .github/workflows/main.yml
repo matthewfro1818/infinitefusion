@@ -10,8 +10,8 @@
 name: RubyCI
 
 on: 
-push: branches: [main]
-pull_request: branches: [main]
+push:branches: [main]
+pull_request:branches: [main]
 
 jobs: 
 test: 
@@ -24,13 +24,13 @@ ruby-version: ['3.1','3.0','2.7']
 
 steps: 
 -uses: actions/checkout@v4
--name: SetupRuby${{matrix.ruby-version}}
+-name: SetupRuby${{ matrix.ruby-version }}
 uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
 with: 
-ruby-version: ${{matrix.ruby-version}}
--name: Installdependencies
+ruby-version: ${{ matrix.ruby-version }}
+- name: Installdependencies
 run: bundleinstall
--name: Runtests
+- name: Runtests
 run: bundleexecrakesteps
 -name: Runtests2
 run: bundleinstallsteps
