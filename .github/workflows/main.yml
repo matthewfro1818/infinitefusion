@@ -1,12 +1,3 @@
-#ThisworkflowusesactionsthatarenotcertifiedbyGitHub.
-#Theyareprovidedbyathird-partyandaregovernedby
-#separatetermsofservice,privacypolicy,andsupport
-#documentation.
-
-#GitHubrecommendspinningactionstoacommitSHA.
-#Togetanewerversion,youwillneedtoupdatetheSHA.
-#Youcanalsoreferenceatagorbranch,buttheactionmaychangewithoutwarning.
-
 name: RubyCI
 
 on: 
