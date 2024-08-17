@@ -33,12 +33,13 @@ jobs:
       - name: Install dependencies
         run: bundle install
       - name: Run tests
-        run: bundle exec rakesteps:
+        run: bundle exec rakesteps
+      - run: bundle installsteps:
+      - name: Run tests 2
       - uses: actions/checkout@v4
-- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
   with:
     ruby-version: '3.1'
-- run: bundle installsteps:
 - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
   with:
     bundler-cache: true
