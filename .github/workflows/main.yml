@@ -1,36 +1,15 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# GitHub recommends pinning actions to a commit SHA.
-# To get a newer version, you will need to update the SHA.
-# You can also reference a tag or branch, but the action may change without warning.
-
-name: Ruby Gem
-
-on:
-  # Manually publish
-  workflow_dispatch:
-  # Alternatively, publish whenever changes are merged to the `main` branch.
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
-    name: Build + Publish
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-
+    strategy:
+      matrix:
+        node: [ 14, 16, 18 ]
+    name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
-          ruby-version: 'head'
-        env:
-          GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm test
