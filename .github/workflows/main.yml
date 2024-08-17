@@ -1,121 +1,134 @@
 name: RubyCI
 
-on: 
-push:branches: [main]
-pull_request:branches: [main]
 
-jobs: 
-test: 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-runs-on: ubuntu-latest
 
-strategy: 
-matrix: 
-ruby-version: ['3.1','3.0','2.7']
+jobs:
+ setup-ruby:
 
-steps: 
--uses: actions/checkout@v4
--name: SetupRuby${{ matrix.ruby-version }}
-uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-with: 
-ruby-version: ${{ matrix.ruby-version }}
-- name: Installdependencies
-run: bundleinstall
-- name: Runtests
-run: bundleexecrakesteps
--name: Runtests2
-run: bundleinstallsteps
--name: Runtests3
--uses: actions/checkout@v4
--uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
--uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-with: 
-ruby-version: '3.1'
-with: 
-bundler-cache: true
-steps: 
--uses: actions/cache@v3
-with: 
-path: vendor/bundle
-key: ${{runner.os}}-gems-${{hashFiles('**/Gemfile.lock')}}
-restore-keys: |
-${{runner.os}}-gems-
--name: Bundleinstall
-run: |
-bundleconfigpathvendor/bundle
-bundleinstall--jobs4--retry3
--uses: actions/cache@v3
-with: 
-path: vendor/bundle
-key: bundle-use-ruby-${{matrix.os}}-${{matrix.ruby-version}}-${{hashFiles('**/Gemfile.lock')}}
-restore-keys: |
-bundle-use-ruby-${{matrix.os}}-${{matrix.ruby-version}}-
--name: Bundleinstall
-run: |
-bundleconfigpathvendor/bundle
-bundleinstall--jobs4--retry3
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      with:
+        ruby-version: '3.1' # Not needed with a .ruby-version file
+        run: bundle install
+          bundle exec rakestrategy:
+  matrix:
+    ruby-version: ['3.1', '3.0', '2.7']jobs:
+  test1:
 
-test: 
-runs-on: ${{matrix.os}}-latest
-strategy: 
-fail-fast: false
-matrix: 
-os: [ubuntu,macos]
-ruby: [2.5,2.6,2.7,head,debug,jruby,jruby-head,truffleruby,truffleruby-head]
-continue-on-error: ${{endsWith(matrix.ruby,'head')||matrix.ruby=='debug'}}
-steps: 
--uses: actions/checkout@v4
--uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-with: 
-ruby-version: ${{matrix.ruby}}
--run: bundleinstall
--run: bundleexecrake
+    runs-on: ubuntu-latest
 
-test2: 
-runs-on: ubuntu-latest
-steps: 
--uses: actions/checkout@v4
--uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-with: 
-ruby-version: '2.6'
--run: bundleinstall
--name: Rubocop
-run: rubocop-fgithub
+    strategy:
+      matrix:
+        ruby-version: ['3.1', '3.0', '2.7']
 
-build: 
-name: Build+Publish
-runs-on: ubuntu-latest
-permissions: 
-packages: write
-contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+- uses: actions/checkout@v4
+- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+  with:
+    ruby-version: '3.1'
+- run: bundle install
+        run: bundle exec rake
+- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+  with:
+    bundler-cache: true
 
-steps: 
--uses: actions/checkout@v4
--name: SetupRuby2.6
-uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-with: 
-ruby-version: '2.6'
--run: bundleinstall
+- uses: actions/cache@v3
+  with:
+    path: vendor/bundle
+    key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-gems-
+- name: Bundle install
+  run: |
+    bundle config path vendor/bundle
+    bundle install --jobs 4 --retry 3
+- uses: actions/cache@v3
+  with:
+    path: vendor/bundle
+    key: bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-${{ hashFiles('**/Gemfile.lock') }}
+    restore-keys: |
+      bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-
+- name: Bundle install
+  run: |
+    bundle config path vendor/bundle
+    bundle install --jobs 4 --retry 3
 
--name: PublishtoGPR
-run: |
-mkdir-p$HOME/.gem
-touch$HOME/.gem/credentials
-chmod0600$HOME/.gem/credentials
-printf--"---\n: github: ${GEM_HOST_API_KEY}\n">$HOME/.gem/credentials
-gembuild*.gemspec
-gempush--KEYgithub--hosthttps: //rubygems.pkg.github.com/${OWNER}*.gem
-env: 
-GEM_HOST_API_KEY: "Bearer${{secrets.GITHUB_TOKEN}}"
-OWNER: ${{github.repository_owner}}
+  test2:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, macos]
+        ruby: [2.5, 2.6, 2.7, head, debug, jruby, jruby-head, truffleruby, truffleruby-head]
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - run: bundle install
+      - run: bundle exec rake
 
--name: PublishtoRubyGems
-run: |
-mkdir-p$HOME/.gem
-touch$HOME/.gem/credentials
-chmod0600$HOME/.gem/credentials
-printf--"---\n: rubygems_api_key: ${GEM_HOST_API_KEY}\n">$HOME/.gem/credentials
-gembuild*.gemspec
-gempush*.gem
-env: 
-GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
+  test3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: '2.6'
+      - run: bundle install
+      - name: Rubocop
+        run: rubocop -f github
+
+  build:
+    name: Build + Publish
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby 2.6
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: '2.6'
+      - run: bundle install
+
+      - name: Publish to GPR
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:github: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+          gem build *.gemspec
+          gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
+        env:
+          GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
+          OWNER: ${{ github.repository_owner }}
+
+      - name: Publish to RubyGems
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+          gem build *.gemspec
+          gem push *.gem
+        env:
+          GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
