@@ -34,51 +34,55 @@ jobs:
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+        ruby-version: ${{ matrix.ruby-version }}
       - name: Install dependencies
         run: bundle install
-      - name: Run tests
-- uses: actions/checkout@v4
-- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-  with:
-    ruby-version: '3.1'
-- run: bundle install
-        run: bundle exec rake
-- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-  with:
-    bundler-cache: true
-
-- uses: actions/cache@v3
-  with:
+      - name: Run tests 
+      - name: Cheakout
+      - uses: actions/checkout@v4 
+      - name: Setup Ruby
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - name: Install Ruby
+        with:
+        ruby-version: '3.1'
+      - name: Install dependencies 2
+      - run: bundle install
+         bundle exec rake
+      - name: Install dependencies
+      - uses: ruby/setup      _ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+        bundler-cache: true
+      - uses: actions/cache@v3
+with:
     path: vendor/bundle
     key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
     restore-keys: |
       ${{ runner.os }}-gems-
-- name: Bundle install
-  run: |
-    bundle config path vendor/bundle
-    bundle install --jobs 4 --retry 3
-- uses: actions/cache@v3
-  with:
-    path: vendor/bundle
-    key: bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-${{ hashFiles('**/Gemfile.lock') }}
-    restore-keys: |
+      - name: Bundle install
+          run: |
+            bundle config path vendor/bundle
+            bundle install --jobs 4 --retry 3
+      - uses: actions/cache@v3
+      with:
+      path: vendor/bundle
+      key: bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-${{ hashFiles('**/Gemfile.lock') }}
+      restore-keys: |
       bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-
-- name: Bundle install
-  run: |
-    bundle config path vendor/bundle
-    bundle install --jobs 4 --retry 3
-
-  test2:
+      - name: Bundle install
+       run: |
+         bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+ 
+    test2:
     runs-on: ${{ matrix.os }}-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, head, debug, jruby, jruby-head, truffleruby, truffleruby-head]
+     strategy:
+     fail-fast: false
+     matrix:
+     os: [ubuntu, macos]
+     ruby: [2.5, 2.6, 2.7, head, debug, jruby, jruby-head, truffleruby, truffleruby-head]
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
