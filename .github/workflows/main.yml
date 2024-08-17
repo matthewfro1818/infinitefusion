@@ -34,35 +34,35 @@ jobs:
         run: bundle install
       - name: Run tests
         run: bundle exec rakesteps
-      - run: bundle installsteps:
       - name: Run tests 2
+        run: bundle installsteps
+      - name: Run tests 3
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-  with:
-    ruby-version: '3.1'
-- uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+with:
+  ruby-version: '3.1'
   with:
     bundler-cache: true
     steps:
-- uses: actions/cache@v3
-  with:
+    - uses: actions/cache@v3
+    with:
     path: vendor/bundle
     key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
     restore-keys: |
       ${{ runner.os }}-gems-
-- name: Bundle install
+      - name: Bundle install
   run: |
     bundle config path vendor/bundle
     bundle install --jobs 4 --retry 3
-steps:
-- uses: actions/cache@v3
-  with:
+    - uses: actions/cache@v3
+    with:
     path: vendor/bundle
     key: bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-${{ hashFiles('**/Gemfile.lock') }}
     restore-keys: |
       bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby-version }}-
-- name: Bundle install
-  run: |
+    - name: Bundle install
+     run: |
     bundle config path vendor/bundle
     bundle install --jobs 4 --retry 3
 
@@ -82,7 +82,7 @@ steps:
       - run: bundle install
       - run: bundle exec rake
 
-  test:
+  test2:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
